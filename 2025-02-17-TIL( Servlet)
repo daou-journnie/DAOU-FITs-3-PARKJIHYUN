@@ -1,0 +1,68 @@
+## 1. Web Project 생성 및 환경 구축
+
+- **Web Project 생성**
+    - IDE(예: Eclipse, IntelliJ)에서 Dynamic Web Project 또는 Maven 기반 Web Project 생성
+- **Tomcat 설치 및 설정**
+    - Tomcat 서버를 다운로드하여 설치
+    - IDE에 Tomcat 서버를 연동해 프로젝트 실행 환경 구성
+
+---
+
+## 2. 서블릿(Servlet) 작성 및 실행 원리
+
+- **서블릿의 정의**
+    - **Servlet 인터페이스**: 웹에서 실행 가능한 Java 프로그램에 대한 표준 규약
+    - 직접 Servlet 인터페이스를 구현하지 않고, 계층 구조를 통해 개발
+        - **Servlet 인터페이스 → GenericServlet 클래스 → HttpServlet 클래스**
+        - 보통 **HttpServlet**을 상속받아 개발
+- **HttpServlet 상속하여 서블릿 구현**
+    - **상속되는 주요 메서드**
+        - `init()`
+            - 서블릿 객체가 생성될 때 **한 번** 호출되는 초기화 메서드
+            - 생성자 대신 초기화 작업을 수행 (자원 할당 등)
+        - `service()`
+            - 클라이언트의 요청마다 호출되는 메서드
+            - 내부에서 요청 방식(GET, POST 등)에 따라 `doGet()` 또는 `doPost()`를 호출
+            - 보통은 **오버라이딩하지 않음**
+        - `doGet()` / `doPost()`
+            - 각각 GET, POST 방식의 요청을 처리하도록 오버라이딩
+            - 클라이언트가 원하는 작업을 구현
+        - `destroy()`
+            - 서블릿 인스턴스가 WAS에서 제거될 때 호출되는 메서드
+            - 자원 해제 등의 작업 수행
+
+---
+
+## 3. 클라이언트와 서블릿 간의 통신
+
+- **서블릿 호출 방법**
+    - **URL 매핑 방법**
+        - **web.xml**: XML 파일을 사용해 서블릿에 논리적인 이름과 URL 매핑을 지정
+            - 번거롭지만 중앙집중적으로 관리 가능
+        - **Annotation 방식**
+            - 예: `@WebServlet(name = "helloServlet", value = "/hello-servlet")`
+            - 직관적이고 간편하게 매핑 설정 가능
+- **클라이언트의 요청 방식**
+    - **GET 방식**
+        - **Query String**: URL 뒤에 `?변수=값&변수=값` 형태로 데이터를 전달
+            - 예시:
+                
+                ```
+                http://localhost:8080/HelloWebProject_war_exploded/myServlet?name=홍길동&age=20&address=서울
+                
+                ```
+                
+        - **서블릿에서 데이터 추출**
+            - `request.getParameter("변수명")` 메서드를 사용해 전달된 데이터 수신
+        - **주의사항**
+            - URL에 데이터가 노출되어 보안이 취약함
+            - URL 길이 제한이 있어 많은 데이터 전송에는 부적합
+    - **POST 방식**
+        - **데이터 전달**
+            - HTML form의 method="POST"를 통해 데이터를 전송
+            - 요청 본문(request body)에 데이터가 포함되므로 URL에 노출되지 않음
+        - **보안 및 길이**
+            - GET보다 보안 측면에서 상대적으로 안전 (하지만 패킷 분석 시 노출될 수 있음)
+            - 데이터 길이 제한이 거의 없음
+- **HTML 양식 작성**
+    - 클라이언트에게 보여줄 사용자 입력 양식을 HTML로 작성하여 서블릿 호출에 사용
