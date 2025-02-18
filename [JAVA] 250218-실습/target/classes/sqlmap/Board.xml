@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC
+        "-//mybatis.org/DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="example.MyBoard">
+    <select id="selectAllBoard" resultType="Board">
+        <![CDATA[
+            SELECT *
+            FROM BOARD
+        ]]>
+    </select>
+
+    <select id="selectBoardById" parameterType="Integer" resultType="Board">
+        <![CDATA[
+        SELECT *
+        FROM BOARD
+        WHERE ID = #{id}
+        ]]>
+    </select>
+
+    <insert parameterType="Board" id="insertBoard">
+        <!--    CDATA는 SQL Query 안 특수문자(<, >, ...)가 tag로 인식되지 않도록 처리    -->
+        <![CDATA[
+            INSERT INTO BOARD (title, content, writer)
+            VALUES (#{title}, #{content}, #{writer})
+        ]]>
+    </insert>
+
+    <delete parameterType="int" id="deleteBoard">
+        <![CDATA[
+        DELETE FROM BOARD WHERE id = #{id}
+    ]]>
+    </delete>
+</mapper>

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC
+        "-//mybatis.org/DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd" >
+
+<configuration>
+    <!--JDBC Driver Class / Database Setting-->
+<!--  연결 설정 내용은 XML 안에 직접 작성하지 않고 별도 외부 파일에 작성해서 해당 파일을 property로 가져와서 사용  -->
+    <properties resource="./driver.properties"/>
+    
+    <!--  MyBatis 실행설정  -->
+    <!--  상당히 많은 설정이 있지만 대부분 default 설정 이용  -->
+    <settings>
+        <setting name="jdbcTypeForNull" value="NULL"/>
+        <setting name="logImpl" value="STDOUT_LOGGING"/>
+
+    </settings>
+
+    <!--  TypeAlias  -->
+    <typeAliases>
+        <typeAlias alias="Book" type="org.example.booksearchweb.model.BookVO" />
+        <typeAlias alias="Member" type="org.example.booksearchweb.model.MemberVO" />
+        <typeAlias alias="Board" type="org.example.booksearchweb.model.BoardVO" />
+    </typeAliases>
+    
+    <!--  DB 연결 정보  -->
+    <environments default="development">
+        <environment id="development">
+            <transactionManager type="JDBC"/>
+            <dataSource type="POOLED">
+                <property name="driver" value="${db.driver}"/>
+                <property name="url" value="${db.url}"/>
+                <property name="username" value="${db.username}"/>
+                <property name="password" value="${db.password}"/>
+            </dataSource>
+        </environment>
+    </environments>
+
+    <!--  SQL 구문 작성하는 mapper 파일 경로 지정  -->
+    <mappers>
+        <mapper resource="./sqlmap/Book.xml"/>
+        <mapper resource="./sqlmap/Member.xml"/>
+        <mapper resource="./sqlmap/Board.xml"/>
+    </mappers>
+
+</configuration>
+

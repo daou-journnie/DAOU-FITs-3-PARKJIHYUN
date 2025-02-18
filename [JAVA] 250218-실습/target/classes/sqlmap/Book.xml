@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC
+        "-//mybatis.org/DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="example.MyBook">
+    <!--  SELECT문 결과를 HASHMAP에 담겠다
+            isbn type: String
+            -->
+    <select id="selectByISBNHashMap" parameterType="String" resultType="HashMap">
+    <!--    CDATA는 SQL Query 안 특수문자(<, >, ...)가 tag로 인식되지 않도록 처리    -->
+        <![CDATA[
+            SELECT *
+            FROM BOOK
+            WHERE BISBN = #{bisbn}
+        ]]>
+    </select>
+
+    <select id="selectByISBNBookVO" parameterType="String" resultType="Book">
+        <!--    CDATA는 SQL Query 안 특수문자(<, >, ...)가 tag로 인식되지 않도록 처리    -->
+        <![CDATA[
+            SELECT *
+            FROM BOOK
+            WHERE BISBN = #{bisbn}
+        ]]>
+    </select>
+
+    <select id="selectAll" resultType="HashMap">
+        <!--    CDATA는 SQL Query 안 특수문자(<, >, ...)가 tag로 인식되지 않도록 처리    -->
+        <![CDATA[
+            SELECT *
+            FROM BOOK
+        ]]>
+    </select>
+
+    <insert parameterType="Book" id="insertBookVO">
+        <!--    CDATA는 SQL Query 안 특수문자(<, >, ...)가 tag로 인식되지 않도록 처리    -->
+        <![CDATA[
+            INSERT INTO BOOK (BISBN, BTITLE, BPRICE, BAUTHOR)
+            VALUES (#{bisbn}, #{btitle}, #{bprice}, #{bauthor})
+        ]]>
+    </insert>
+
+    <select id="searchByTitle" parameterType="String" resultType="Book">
+        <![CDATA[
+            SELECT BISBN, BTITLE, BPRICE, BAUTHOR
+            FROM BOOK
+            WHERE BTITLE LIKE '%'||#{keyword}||'%'
+        ]]>
+    </select>
+
+    <select id="searchByTitlefilterByPrice" parameterType="String" resultType="Book">
+        <![CDATA[
+        SELECT BISBN, BTITLE, BPRICE, BAUTHOR
+        FROM BOOK
+        WHERE BTITLE LIKE '%'||#{keyword}||'%' AND BPRICE < #{price}
+        ]]>
+    </select>
+
+    <update parameterType="Book" id="updateBookVO">
+        <!--    CDATA는 SQL Query 안 특수문자(<, >, ...)가 tag로 인식되지 않도록 처리    -->
+        <![CDATA[
+        UPDATE BOOK
+        SET BTITLE = #{btitle},
+            BPRICE = #{bprice},
+            BAUTHOR = #{bauthor}
+        WHERE BISBN = #{bisbn}
+    ]]>
+    </update>
+
+    <delete parameterType="Book" id="deleteBookVO">
+        <![CDATA[
+        DELETE FROM BOOK WHERE BISBN = #{bisbn}
+    ]]>
+    </delete>
+
+
+
+
+</mapper>

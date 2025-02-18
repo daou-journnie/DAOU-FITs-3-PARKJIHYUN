@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Search Result</title>
+</head>
+<body>
+<h1>검색 결과</h1>
+<h3>검색 키워드 : {searchKeyword}</h3>
+<h3>검색 가격 : {price}원 미만 </h3>
+out.println("<ul>");
+    for(BookVO book : searchResult){
+    out.println("<li>"+book.getBtitle()+", "+ book.getBprice() +"</li>");
+    }
+    out.println("</ul>");
+
+
+</body>
+</html>
