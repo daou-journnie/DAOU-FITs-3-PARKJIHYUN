@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>jQuery Selector & CSS/JS 실습 예제</title>
+  <!-- jQuery CDN 포함 -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <style>
+    /* 기본 CSS 스타일 */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    .myClass {
+      color: blue;
+      font-weight: bold;
+    }
+    #myId {
+      background-color: lightgray;
+      padding: 10px;
+    }
+    /* 부모와 자식 요소 스타일 */
+    #parent {
+      border: 2px solid #333;
+      padding: 10px;
+      margin-top: 20px;
+    }
+    .child, .descendant {
+      padding: 5px;
+      margin: 5px 0;
+    }
+  </style>
+</head>
+<body>
+<h1>jQuery Selector & CSS/JS 실습 예제</h1>
+
+<!-- 전체 선택자 예제 (모든 요소에 효과 적용) -->
+<p>이 문장은 전체 선택자 테스트입니다.</p>
+
+<!-- 타입 선택자 예제 (태그 이름 선택) -->
+<div>이것은 div 타입 요소입니다.</div>
+
+<!-- 아이디 선택자 예제 -->
+<div id="myId">이것은 아이디 선택자 예제입니다.</div>
+
+<!-- 클래스 선택자 예제 -->
+<p class="myClass">이것은 클래스 선택자 예제입니다.</p>
+
+<!-- 부모, 자식, 후손 선택자 예제 -->
+<div id="parent">
+  <p class="child">자식 선택자: 바로 자식 요소입니다.</p>
+  <div>
+    <p class="child descendant">후손 선택자: 간접 자식(후손) 요소입니다.</p>
+  </div>
+</div>
+
+<script>
+  $(document).ready(function() {
+    // 1. 전체 선택자: 모든 요소에 테두리를 적용합니다.
+    $('*').css('border', '1px solid #ccc');
+
+    // 2. 타입 선택자: 모든 <p> 요소의 글자색을 green으로 변경합니다.
+    $('p').css('color', 'green');
+
+    // 3. 아이디 선택자: id가 myId인 요소의 배경색을 yellow로 변경합니다.
+    $('#myId').css('background-color', 'yellow');
+
+    // 4. 클래스 선택자: 클래스 myClass인 요소의 글자 크기를 20px로 설정합니다.
+    $('.myClass').css('font-size', '20px');
+
+    // 5. 자식 선택자: #parent의 바로 자식인 .child 요소의 글자색을 purple로 변경합니다.
+    $('#parent > .child').css('color', 'purple');
+
+    // 6. 후손 선택자: #parent 내부의 모든 후손 중 .descendant 요소의 글자색을 orange로 변경합니다.
+    $('#parent .descendant').css('color', 'orange');
+
+    // 추가: JavaScript 이벤트 기능
+    // 모든 div 요소를 클릭하면 alert 표시
+    $('div').click(function() {
+      alert('div가 클릭되었습니다!');
+    });
+  });
+</script>
+</body>
+</html>
