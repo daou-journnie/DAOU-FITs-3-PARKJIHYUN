@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC
+        "-//mybatis.org/DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="example.MyComment">
+    <select id="selectAllComment" parameterType="Integer" resultType="Comment">
+        <![CDATA[
+        SELECT C.*, M.NAME writer
+        FROM MEMBER M, (
+            SELECT C.*
+            FROM COMMENTS C, BOARD B
+            WHERE C.boardId = B.id) C
+        WHERE C.userId = M.id AND C.boardId = #{boardId}
+        ORDER BY C.id
+        ]]>
+    </select>
+
+    <select id="selectCommentById" parameterType="Integer" resultType="Comment">
+        <![CDATA[
+        SELECT C.*, M.NAME WRITER
+        FROM COMMENTS C, MEMBER M
+        WHERE C.USERID = M.ID AND C.ID = #{id}
+        ]]>
+    </select>
+
+<!--    <insert parameterType="Comment" id="insertComment">-->
+<!--        &lt;!&ndash;    CDATA는 SQL Query 안 특수문자(<, >, ...)가 tag로 인식되지 않도록 처리    &ndash;&gt;-->
+<!--        <![CDATA[-->
+<!--            INSERT INTO COMMENTS (boardId, content, userId)-->
+<!--            VALUES (#{boardId}, #{content}, #{userId})-->
+<!--        ]]>-->
+<!--    </insert>-->
+
+    <insert id="insertComment" parameterType="Comment"  useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO comments (boardId, userId, content)
+        VALUES (#{boardId}, #{userId}, #{content})
+        <selectKey keyProperty="id" order="AFTER" resultType="int">
+            SELECT nvl(max(id),0) as id FROM comments
+        </selectKey>
+    </insert>
+
+
+    <delete parameterType="int" id="deleteComment">
+        <![CDATA[
+        DELETE FROM COMMENTS WHERE id = #{id}
+        ]]>
+    </delete>
+</mapper>

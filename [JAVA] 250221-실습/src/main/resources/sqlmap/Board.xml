@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC
+        "-//mybatis.org/DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="example.MyBoard">
+
+    <select id="selectAllBoardwithQuery" parameterType="String" resultType="Board">
+        <![CDATA[
+        SELECT B.*, M.NAME WRITER,
+               (SELECT COUNT(*) FROM COMMENTS C WHERE C.BOARDID = B.ID) AS COMMENTCOUNT,
+               (SELECT COUNT(*) FROM LIKES L WHERE L.BOARDID = B.ID) AS LIKECOUNT
+
+        FROM BOARD B, MEMBER M
+        WHERE B.USERID = M.ID and
+              (TITLE LIKE '%' || #{query} || '%'
+            OR CONTENT LIKE '%' || #{query} || '%')
+        ORDER BY B.ID
+        ]]>
+    </select>
+
+    <select id="selectBoardById" parameterType="Integer" resultType="Board">
+        <![CDATA[
+        SELECT B.*, M.NAME WRITER
+        FROM BOARD B, MEMBER M
+        WHERE B.USERID = M.ID AND B.ID = #{id}
+        ]]>
+    </select>
+
+    <insert id="insertBoard" parameterType="Board" useGeneratedKeys="true" keyProperty="id">
+
+        <![CDATA[
+        INSERT INTO BOARD (title, content, userId)
+        VALUES (#{title}, #{content}, #{userId})
+        ]]>
+        <selectKey keyProperty="id" resultType="int" order="AFTER">
+            SELECT nvl(max(id),0) as id FROM board
+        </selectKey>
+    </insert>
+
+    <!-- 게시글 수정 -->
+    <update id="updateBoard" parameterType="org.example.booksearchweb.model.BoardVO">
+        <![CDATA[
+        UPDATE BOARD
+        SET title = #{title}, content = #{content}
+        WHERE id = #{id}
+        ]]>
+    </update>
+
+
+
+    <delete parameterType="int" id="deleteBoard">
+        <![CDATA[
+        DELETE FROM BOARD WHERE id = #{id}
+    ]]>
+    </delete>
+
+    <!-- 조회수 증가 쿼리 -->
+    <update id="incrementViewCount" parameterType="int">
+        <![CDATA[
+        UPDATE BOARD
+        SET viewCount = viewCount + 1
+        WHERE id = #{boardId}
+        ]]>
+    </update>
+
+    <!-- 좋아요 추가 -->
+    <insert id="insertLike" parameterType="Like">
+        <![CDATA[
+        INSERT INTO LIKES (boardId, userId)
+        VALUES (#{boardId}, #{userId})
+        ]]>
+    </insert>
+
+    <!-- 좋아요 취소 -->
+    <delete id="deleteLike" parameterType="map">
+        <![CDATA[
+        DELETE FROM LIKES WHERE boardId = #{boardId} AND userId = #{userId}
+        ]]>
+    </delete>
+
+    <!-- 좋아요 수 여부 -->
+    <select id="selectLikeCountByUser" parameterType="map" resultType="int">
+    <![CDATA[
+        SELECT COUNT(*) FROM LIKES
+        WHERE boardId = #{boardId} AND userId = #{userId}
+        ]]>
+</select>
+</mapper>

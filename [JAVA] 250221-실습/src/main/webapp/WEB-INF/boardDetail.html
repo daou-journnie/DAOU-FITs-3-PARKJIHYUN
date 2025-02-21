@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>게시글 상세보기</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .board-detail { max-width: 800px; margin: auto; }
+        .board-detail h2 { border-bottom: 1px solid #ddd; padding-bottom: 10px; }
+        .board-detail .info { font-size: 0.9em; color: #555; margin-bottom: 20px; }
+        .board-detail .content { white-space: pre-wrap; margin-bottom: 20px; }
+        .actions a { text-decoration: none; padding: 8px 12px; background: #f2f2f2; border: 1px solid #ddd; color: #333; margin-right: 10px; }
+        .actions a:hover { background: #e2e2e2; }
+    </style>
+</head>
+<body>
+<div id="boardDetail" class="board-detail">
+    <!-- 동적으로 게시글 정보가 채워질 영역 -->
+</div>
+
+<script>
+    // URL 쿼리 파라미터에서 id를 가져오는 함수
+    function getQueryParam(param) {
+        const params = new URLSearchParams(window.location.search);
+        return params.get(param);
+    }
+
+    const boardId = getQueryParam("id");
+    const boardDetailEl = document.getElementById("boardDetail");
+
+    if (!boardId) {
+        boardDetailEl.innerHTML = "<p>게시글을 찾을 수 없습니다.</p>";
+    } else {
+        // API 호출: 예를 들어, /api/boardDetail?id=boardId
+        fetch('/api/boardDetail?id=' + boardId)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                const board = data.board;
+                const member = data.member; // 현재 로그인한 멤버 정보
+
+                if (!board) {
+                    boardDetailEl.innerHTML = "<p>게시글을 찾을 수 없습니다.</p>";
+                    return;
+                }
+
+                // 삭제, 수정 버튼은 게시글 작성자와 로그인한 멤버의 ID가 같은 경우에만 보임
+                let actions = `<a href="boardList.html">목록보기</a>`;
+                if (member && board.userId === member.id) {
+                    actions += `<a href="boardDelete.html?id=${board.id}">삭제</a>
+                        <a href="boardEdit.html?id=${board.id}">수정</a>`;
+                }
+
+                // 게시글 상세 정보를 HTML로 구성
+                const html = `
+            <h2>${board.title}</h2>
+            <div class="info">
+              작성자: ${member ? member.name : board.writer} | 등록일: ${new Date(board.regDate).toLocaleString()} | 수정일: ${new Date(board.modDate).toLocaleString()}
+            </div>
+            <div class="content">
+              ${board.content}
+            </div>
+            <div class="actions">
+              ${actions}
+            </div>
+          `;
+
+                boardDetailEl.innerHTML = html;
+            })
+            .catch(error => {
+                console.error('Error fetching board detail:', error);
+                boardDetailEl.innerHTML = "<p>게시글을 로드하는 중 오류가 발생했습니다.</p>";
+            });
+    }
+</script>
+</body>
+</html>
